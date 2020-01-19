@@ -1,0 +1,22 @@
+commit 7256a6a35eeefd0ca6992eabd6283aadc7dfd4eb
+Author: Charles Rose <charles.rose@dell.com>
+Date:   Mon Feb 18 16:34:16 2019 -0500
+
+    script: zip fails with sockets
+    
+    zip fails when archive contains socket files. sosreport removes
+    them anyway. If sosreport supported 'zip' compression, this would
+    have not been an issue.
+
+diff --git a/src/sassist.sh b/src/sassist.sh
+index be07d0e..49fb65c 100755
+--- a/src/sassist.sh
++++ b/src/sassist.sh
+@@ -67,6 +67,7 @@ do_sosreport()
+ 		--tmp-dir ${TMP_DIR} --build --quiet \
+ 		--name ${SVCTAG} || return 1
+ 
++	find ${TMP_DIR} -type s -exec rm -f '{}' \;
+ 	$(cd ${TMP_DIR}/sosreport-* && zip -y -q -r ${OUTFILE_F} . )
+ }
+ 
